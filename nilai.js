@@ -1,50 +1,60 @@
 // =============================================================
-// nilai.js (STARTER) - LOGIKA hitung nilai, berjalan di BROWSER
-//
-// LANGKAH 2:
-//   Ganti setiap function di bawah dengan versi Anda dari LAB 1 (soal.js).
-//   Function di bawah sengaja hanya "stub" agar halaman tetap bisa berjalan.
-//
+// nilai.js - LOGIKA hitung nilai, berjalan di BROWSER
 // File ini hanya berisi LOGIKA (hitung nilai). Urusan DOM ada di app.js.
 // Uji di Console browser, mis.: tentukanGrade(84.9)  -> 'B'
 // =============================================================
 
+// Bobot nilai akhir: tugas 30%, UTS 30%, UAS 40%
+const BOBOT = { tugas: 0.3, uts: 0.3, uas: 0.4 };
+
 function hitungNilaiAkhir(tugas, uts, uas) {
-  // TODO: salin dari Lab 1
-  return 0;
+  const nilai = tugas * BOBOT.tugas + uts * BOBOT.uts + uas * BOBOT.uas;
+  return Math.round(nilai * 10) / 10;   // dibulatkan 1 desimal
 }
 
+// A >= 85, B >= 75, C >= 65, D >= 55, selain itu E
 function tentukanGrade(nilai) {
-  // TODO: salin dari Lab 1
-  return '?';
+  if (nilai >= 85) return 'A';
+  if (nilai >= 75) return 'B';
+  if (nilai >= 65) return 'C';
+  if (nilai >= 55) return 'D';
+  return 'E';
 }
 
+// Dari data mentah -> data + nilaiAkhir, grade, lulus (grade bukan E)
 function buatRekap(daftar) {
-  // TODO: salin dari Lab 1 (map + spread, tambah nilaiAkhir, grade, lulus)
-  return daftar;
+  return daftar.map((m) => {
+    const nilaiAkhir = hitungNilaiAkhir(m.tugas, m.uts, m.uas);
+    const grade = tentukanGrade(nilaiAkhir);
+    return { ...m, nilaiAkhir, grade, lulus: grade !== 'E' };
+  });
 }
 
 function hitungRataRata(rekap) {
-  // TODO: salin dari Lab 1
-  return 0;
+  if (rekap.length === 0) return 0;
+  const total = rekap.reduce((jumlah, m) => jumlah + m.nilaiAkhir, 0);
+  return Math.round((total / rekap.length) * 10) / 10;
 }
 
 function cariTertinggi(rekap) {
-  // TODO: salin dari Lab 1. Tambahkan: jika rekap kosong -> return null
-  return null;
+  if (rekap.length === 0) return null;
+  return rekap.reduce((terbaik, m) => (m.nilaiAkhir > terbaik.nilaiAkhir ? m : terbaik));
 }
 
 function hitungDistribusiGrade(rekap) {
-  // TODO: salin dari Lab 1
-  return { A: 0, B: 0, C: 0, D: 0, E: 0 };
+  const distribusi = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+  for (const m of rekap) distribusi[m.grade] += 1;
+  return distribusi;
 }
 
+// Pencarian nama, tidak peka huruf besar/kecil
 function cariMahasiswa(rekap, kataKunci) {
-  // TODO: salin dari Lab 1
-  return rekap;
+  const kunci = kataKunci.trim().toLowerCase();
+  if (kunci === '') return rekap;
+  return rekap.filter((m) => m.nama.toLowerCase().includes(kunci));
 }
 
-// ---- Sudah jadi: validasi input mahasiswa baru (dipakai sebelum memanggil api.js) ----
+// ---- Validasi input mahasiswa baru (dipakai sebelum memanggil api.js) ----
 // Mengembalikan array pesan error; array kosong = valid.
 function validasiMahasiswa(input) {
   const errors = [];
